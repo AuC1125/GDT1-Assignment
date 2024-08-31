@@ -94,6 +94,34 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""reticle"",
+            ""id"": ""0c2b4297-4bb0-446e-bbce-b4aaf38f7a66"",
+            ""actions"": [
+                {
+                    ""name"": ""aiming"",
+                    ""type"": ""Value"",
+                    ""id"": ""02a9f7e8-4f6e-4814-85ee-6b27fdf1b756"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""77a537a8-00d6-45df-8f1c-8eae87e4762c"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""aiming"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -101,6 +129,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         // walking
         m_walking = asset.FindActionMap("walking", throwIfNotFound: true);
         m_walking_movement = m_walking.FindAction("movement", throwIfNotFound: true);
+        // reticle
+        m_reticle = asset.FindActionMap("reticle", throwIfNotFound: true);
+        m_reticle_aiming = m_reticle.FindAction("aiming", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -204,8 +235,58 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         }
     }
     public WalkingActions @walking => new WalkingActions(this);
+
+    // reticle
+    private readonly InputActionMap m_reticle;
+    private List<IReticleActions> m_ReticleActionsCallbackInterfaces = new List<IReticleActions>();
+    private readonly InputAction m_reticle_aiming;
+    public struct ReticleActions
+    {
+        private @PlayerActions m_Wrapper;
+        public ReticleActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @aiming => m_Wrapper.m_reticle_aiming;
+        public InputActionMap Get() { return m_Wrapper.m_reticle; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ReticleActions set) { return set.Get(); }
+        public void AddCallbacks(IReticleActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ReticleActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ReticleActionsCallbackInterfaces.Add(instance);
+            @aiming.started += instance.OnAiming;
+            @aiming.performed += instance.OnAiming;
+            @aiming.canceled += instance.OnAiming;
+        }
+
+        private void UnregisterCallbacks(IReticleActions instance)
+        {
+            @aiming.started -= instance.OnAiming;
+            @aiming.performed -= instance.OnAiming;
+            @aiming.canceled -= instance.OnAiming;
+        }
+
+        public void RemoveCallbacks(IReticleActions instance)
+        {
+            if (m_Wrapper.m_ReticleActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IReticleActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ReticleActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ReticleActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public ReticleActions @reticle => new ReticleActions(this);
     public interface IWalkingActions
     {
         void OnMovement(InputAction.CallbackContext context);
+    }
+    public interface IReticleActions
+    {
+        void OnAiming(InputAction.CallbackContext context);
     }
 }

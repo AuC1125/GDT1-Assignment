@@ -72,6 +72,34 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "reticle",
+            "id": "0c2b4297-4bb0-446e-bbce-b4aaf38f7a66",
+            "actions": [
+                {
+                    "name": "aiming",
+                    "type": "Value",
+                    "id": "02a9f7e8-4f6e-4814-85ee-6b27fdf1b756",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "77a537a8-00d6-45df-8f1c-8eae87e4762c",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "aiming",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
