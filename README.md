@@ -1,5 +1,5 @@
 # COMP2160 Game Development Task 1: The Wizard’s Apprentice
-### Student name and ID: [Your name and ID here]
+### Student name and ID: [Auston Chang 46291539]
 
 ## Topics covered:
 * Event-based programming

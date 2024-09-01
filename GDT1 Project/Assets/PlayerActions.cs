@@ -122,6 +122,34 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""fire"",
+            ""id"": ""5a8a2632-b2da-40aa-bf0b-f094a0702210"",
+            ""actions"": [
+                {
+                    ""name"": ""shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""723c0d7a-8e4b-479e-9292-4d2ecef66e85"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""87b2ba21-0141-4c25-9728-507b425ff508"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -132,6 +160,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         // reticle
         m_reticle = asset.FindActionMap("reticle", throwIfNotFound: true);
         m_reticle_aiming = m_reticle.FindAction("aiming", throwIfNotFound: true);
+        // fire
+        m_fire = asset.FindActionMap("fire", throwIfNotFound: true);
+        m_fire_shoot = m_fire.FindAction("shoot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -281,6 +312,52 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         }
     }
     public ReticleActions @reticle => new ReticleActions(this);
+
+    // fire
+    private readonly InputActionMap m_fire;
+    private List<IFireActions> m_FireActionsCallbackInterfaces = new List<IFireActions>();
+    private readonly InputAction m_fire_shoot;
+    public struct FireActions
+    {
+        private @PlayerActions m_Wrapper;
+        public FireActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @shoot => m_Wrapper.m_fire_shoot;
+        public InputActionMap Get() { return m_Wrapper.m_fire; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(FireActions set) { return set.Get(); }
+        public void AddCallbacks(IFireActions instance)
+        {
+            if (instance == null || m_Wrapper.m_FireActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_FireActionsCallbackInterfaces.Add(instance);
+            @shoot.started += instance.OnShoot;
+            @shoot.performed += instance.OnShoot;
+            @shoot.canceled += instance.OnShoot;
+        }
+
+        private void UnregisterCallbacks(IFireActions instance)
+        {
+            @shoot.started -= instance.OnShoot;
+            @shoot.performed -= instance.OnShoot;
+            @shoot.canceled -= instance.OnShoot;
+        }
+
+        public void RemoveCallbacks(IFireActions instance)
+        {
+            if (m_Wrapper.m_FireActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IFireActions instance)
+        {
+            foreach (var item in m_Wrapper.m_FireActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_FireActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public FireActions @fire => new FireActions(this);
     public interface IWalkingActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -288,5 +365,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     public interface IReticleActions
     {
         void OnAiming(InputAction.CallbackContext context);
+    }
+    public interface IFireActions
+    {
+        void OnShoot(InputAction.CallbackContext context);
     }
 }

@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
     {
         Vector2 move = movementAction.ReadValue<Vector2>();
         Vector3 direction = new Vector3(move.x, move.y, 0f);
-        transform.Translate(direction * speed * Time.deltaTime);
+        transform.Translate(direction * speed * Time.deltaTime, Space.Self);
     }
 
 }

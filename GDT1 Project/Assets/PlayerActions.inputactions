@@ -100,6 +100,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "fire",
+            "id": "5a8a2632-b2da-40aa-bf0b-f094a0702210",
+            "actions": [
+                {
+                    "name": "shoot",
+                    "type": "Button",
+                    "id": "723c0d7a-8e4b-479e-9292-4d2ecef66e85",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "87b2ba21-0141-4c25-9728-507b425ff508",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

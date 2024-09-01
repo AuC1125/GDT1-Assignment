@@ -64,10 +64,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Player.cs" />
+    <Compile Include="Assets\GhostSpawner.cs" />
     <Compile Include="Assets\Shooting.cs" />
     <Compile Include="Assets\Reticle.cs" />
+    <Compile Include="Assets\Ghoul.cs" />
     <Compile Include="Assets\RotateWand.cs" />
-    <Compile Include="Assets\Ghost.cs" />
+    <Compile Include="Assets\Path.cs" />
     <Compile Include="Assets\PlayerActions.cs" />
   </ItemGroup>
   <ItemGroup>
