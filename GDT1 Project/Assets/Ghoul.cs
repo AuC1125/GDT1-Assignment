@@ -16,13 +16,5 @@ public class Ghoul : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        // Check for collision with spellbolt
-        if (collision.gameObject.CompareTag("Spellbolt"))
-        {
-            Destroy(gameObject); // Destroy the ghoul on collision
-            Destroy(collision.gameObject); // Optionally destroy the spellbolt as well
-        }
-    }
+    
 }

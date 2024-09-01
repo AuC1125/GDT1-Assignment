@@ -57,6 +57,8 @@ public class Shooting : MonoBehaviour
         if (isFired)
         {
             GameObject spellboltClone = Instantiate(Spellbolt);
+            spellboltClone.layer = 7;
+            CapsuleCollider2D capsule = spellboltClone.AddComponent<CapsuleCollider2D>();
             spellboltClone.transform.position = Wand.position;
             spellboltClone.transform.rotation = Quaternion.Euler(0, 0, lookAngle);
 
@@ -67,7 +69,7 @@ public class Shooting : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Ghoul"))
+        if (collision.gameObject.layer == 10)
         {
             Destroy(gameObject);
             Destroy(collision.gameObject);
